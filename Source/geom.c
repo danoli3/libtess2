@@ -30,7 +30,6 @@
 */
 
 //#include "tesos.h"
-#include <assert.h>
 #include "mesh.h"
 #include "geom.h"
 #include <math.h>
@@ -56,7 +55,9 @@ TESSreal tesedgeEval( TESSvertex *u, TESSvertex *v, TESSvertex *w )
 	*/
 	TESSreal gapL, gapR;
 
-	assert( VertLeq( u, v ) && VertLeq( v, w ));
+	if(! VertLeq( u, v ) && VertLeq( v, w )){
+		return 0;
+	}
 
 	gapL = v->s - u->s;
 	gapR = w->s - v->s;
@@ -80,7 +81,9 @@ TESSreal tesedgeSign( TESSvertex *u, TESSvertex *v, TESSvertex *w )
 	*/
 	TESSreal gapL, gapR;
 
-	assert( VertLeq( u, v ) && VertLeq( v, w ));
+	if( !VertLeq( u, v ) && VertLeq( v, w )){
+		return 0;
+	}
 
 	gapL = v->s - u->s;
 	gapR = w->s - v->s;
@@ -111,7 +114,9 @@ TESSreal testransEval( TESSvertex *u, TESSvertex *v, TESSvertex *w )
 	*/
 	TESSreal gapL, gapR;
 
-	assert( TransLeq( u, v ) && TransLeq( v, w ));
+	if(! TransLeq( u, v ) && TransLeq( v, w )){
+		return 0;
+	}
 
 	gapL = v->t - u->t;
 	gapR = w->t - v->t;
@@ -135,7 +140,9 @@ TESSreal testransSign( TESSvertex *u, TESSvertex *v, TESSvertex *w )
 	*/
 	TESSreal gapL, gapR;
 
-	assert( TransLeq( u, v ) && TransLeq( v, w ));
+	if(! TransLeq( u, v ) && TransLeq( v, w )){
+		return 0;
+	}
 
 	gapL = v->t - u->t;
 	gapR = w->t - v->t;
