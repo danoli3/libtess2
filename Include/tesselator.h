@@ -135,10 +135,21 @@ enum TessOption
 
 typedef float TESSreal;
 //note this shouldn't be defined(TARGET_OS_IPHONE) as its always defined either 0 or 1
-#if TARGET_OS_IPHONE || ANDROID || __ARMEL__
-typedef unsigned short TESSindex;
-#else
-typedef unsigned int TESSindex;
+#ifndef TESSindex
+    #if defined(TESS_INDEX_SHORT) || defined(TESS_USE_SHORT_INDEX)
+        typedef unsigned short TESSindex;
+    #elif defined(TESS_INDEX_INT) || defined(TESS_USE_INT_INDEX)
+        typedef unsigned int TESSindex;
+    #elif defined(TARGET_OS_IPHONE) || defined(TARGET_OS_IOS) || \
+          defined(ANDROID) || defined(TARGET_ANDROID) || \
+          defined(__ARMEL__) || defined(__arm__) || defined(__aarch32__) || \
+          defined(__EMSCRIPTEN__) || defined(TARGET_EMSCRIPTEN) || \
+          defined(TARGET_OS_WATCHOS) || defined(TARGET_OS_XROS) || \
+          defined(TARGET_OS_VISION) || defined(__QNX__)
+        typedef unsigned short TESSindex;
+    #else
+        typedef unsigned int TESSindex;
+    #endif
 #endif
 
 typedef struct TESStesselator TESStesselator;
