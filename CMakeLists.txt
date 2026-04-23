@@ -1,15 +1,32 @@
-cmake_minimum_required(VERSION 2.8)
-project(tess2)
-file(GLOB SRCS "Source/*.cpp" "Source/*.c")
-file(GLOB SRCS_INCL "Source/*.h" "Source/*.hpp")
-include_directories("Include")
-add_library(tess2 STATIC ${SRCS} ${SRCS_INCL})
+cmake_minimum_required(VERSION 3.15)
+project(tess2 LANGUAGES C CXX)
 
-# Specify where the library should be installed
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
+    "Source/*.c"
+    "Source/*.cpp"
+)
+
+file(GLOB_RECURSE PUBLIC_HEADERS CONFIGURE_DEPENDS
+    "Include/*.h"
+    "Include/*.hpp"
+)
+
+add_library(tess2 STATIC ${SOURCES})
+add_library(Tess2::tess2 ALIAS tess2)
+
+target_include_directories(tess2
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+
 install(TARGETS tess2
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin)
+    EXPORT Tess2Targets
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
 
-# Specify where the header files should be installed
-install(FILES ${SRCS_INCL} DESTINATION include)
+install(FILES ${PUBLIC_HEADERS}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
